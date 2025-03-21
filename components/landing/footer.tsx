@@ -14,13 +14,13 @@ export default function Footer() {
         <nav className="flex items-center gap-4">
           <Link
             href="/terms-of-service"
-            className="text-sm text-neutral-400 hover:text-neutral-100"
+            className="text-sm hover:underline underline-offset-4"
           >
             Términos de Servicio
           </Link>
           <Link
             href="/privacy-policy"
-            className="text-sm text-neutral-400 hover:text-neutral-100"
+            className="text-sm hover:underline underline-offset-4"
           >
             Política de Privacidad
           </Link>
