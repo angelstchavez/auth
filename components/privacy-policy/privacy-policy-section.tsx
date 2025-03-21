@@ -15,7 +15,7 @@ function PrivacyPolicySection() {
         <CardHeader>
           <CardTitle>Política de Privacidad</CardTitle>
           <CardDescription>
-            Última actualización: 26 de agosto de 2024
+            Última actualización: 21 de marzo de 2025
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
