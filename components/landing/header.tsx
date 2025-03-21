@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AppName } from "@/lib/env";
+import { ThemeToggle } from "../theme/theme-toggle";
 
 const Header = () => {
   return (
@@ -12,9 +13,12 @@ const Header = () => {
           {AppName}
         </Link>
 
-        <Button asChild>
-          <Link href="/auth/login">Iniciar sesión</Link>
-        </Button>
+        <div className="flex ml-auto space-x-2">
+          <ThemeToggle />
+          <Button asChild>
+            <Link href="/auth/login">Iniciar sesión</Link>
+          </Button>
+        </div>
       </div>
     </header>
   );

@@ -1,0 +1,30 @@
+import { UserMenu } from "@/components/app/user-menu";
+import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppName } from "@/lib/env";
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <SidebarProvider>
+      <DashboardSidebar />
+      <main className="flex flex-col flex-1">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger />
+            <div className="font-semibold text-base sm:text-sm">{AppName}</div>
+          </div>
+          <div className="ml-auto space-x-2">
+            <ThemeToggle />
+            <UserMenu />
+          </div>
+        </header>
+        <div className="flex-1 bg-muted p-4">{children}</div>
+      </main>
+    </SidebarProvider>
+  );
+}

@@ -60,7 +60,11 @@ const ResetPasswordForm = ({
                     <FormItem>
                       <FormLabel>Correo electrónico</FormLabel>
                       <FormControl>
-                        <Input placeholder="m@example.com" {...field} />
+                        <Input
+                          placeholder="m@example.com"
+                          {...field}
+                          autoComplete="email"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

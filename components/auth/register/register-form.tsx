@@ -60,7 +60,11 @@ const RegisterForm = ({
                     <FormItem>
                       <FormLabel>Nombre</FormLabel>
                       <FormControl>
-                        <Input placeholder="Tu nombre" {...field} />
+                        <Input
+                          placeholder="Tu nombre"
+                          {...field}
+                          autoComplete="name"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -73,7 +77,11 @@ const RegisterForm = ({
                     <FormItem>
                       <FormLabel>Correo electrónico</FormLabel>
                       <FormControl>
-                        <Input placeholder="m@example.com" {...field} />
+                        <Input
+                          placeholder="m@example.com"
+                          {...field}
+                          autoComplete="email"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
