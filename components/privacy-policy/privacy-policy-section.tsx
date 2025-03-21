@@ -10,7 +10,7 @@ import { AppName, AppUrl, ContactEmail } from "@/lib/env";
 
 function PrivacyPolicySection() {
   return (
-    <div className="container mx-auto px4 py-8">
+    <div className="container mx-auto px-4 md:px-6 py-8">
       <Card>
         <CardHeader>
           <CardTitle>Política de Privacidad</CardTitle>
