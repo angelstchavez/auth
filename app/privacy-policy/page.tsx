@@ -1,7 +1,7 @@
 import Footer from "@/components/landing/footer";
 import Header from "@/components/landing/header";
 
-export default function Home() {
+const PrivacyPolicyPage = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -9,4 +9,6 @@ export default function Home() {
       <Footer />
     </div>
   );
-}
+};
+
+export default PrivacyPolicyPage;
