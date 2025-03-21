@@ -7,7 +7,7 @@ import { ThemeToggle } from "../theme/theme-toggle";
 
 const Header = () => {
   return (
-    <header className="w-full border-b">
+    <header className="w-full border-b bg-card">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <Link href="/" className="text-lg font-bold">
           {AppName}
