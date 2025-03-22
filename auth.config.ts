@@ -4,6 +4,12 @@ import bcrypt from "bcryptjs";
 import { loginSchema } from "./schemas/login";
 import { getUserByEmail } from "./actions/user-actions";
 
+type User = {
+  id: string;
+  email: string;
+  password: string;
+};
+
 export default {
   providers: [
     Credentials({
@@ -17,7 +23,12 @@ export default {
           if (!user || !user.password) return null;
 
           const passwordMatch = await bcrypt.compare(password, user.password);
-          if (passwordMatch) return user;
+          if (passwordMatch) {
+            return {
+              id: user.id,
+              email: user.email,
+            } as User;
+          }
         }
 
         return null;

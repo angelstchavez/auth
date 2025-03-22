@@ -119,7 +119,6 @@ export const updateUserHandler = async (
               })),
             }
           : undefined,
-        accessModules: undefined,
       },
       include: {
         roles: {
@@ -159,11 +158,6 @@ export const getUserById = async (userId: string) => {
             role: true,
           },
         },
-        accessModules: {
-          include: {
-            module: true,
-          },
-        },
       },
     });
 
@@ -181,11 +175,6 @@ export const getUserByEmail = async (email: string) => {
         roles: {
           include: {
             role: true,
-          },
-        },
-        accessModules: {
-          include: {
-            module: true,
           },
         },
       },
@@ -210,15 +199,6 @@ export const getUsers = async (): Promise<ResponseMessage> => {
         roles: {
           select: {
             role: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-        accessModules: {
-          select: {
-            module: {
               select: {
                 name: true,
               },

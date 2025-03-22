@@ -4,7 +4,6 @@ import { prisma } from "./lib/db";
 import authConfig from "./auth.config";
 import { getUserById } from "./actions/user-actions";
 
-// Creamos una instancia de NextAuth primero
 const nextAuthInstance = NextAuth({
   callbacks: {
     async signIn({ user }) {
@@ -36,10 +35,15 @@ const nextAuthInstance = NextAuth({
         where: { id: token.sub },
         include: {
           roles: {
-            include: { role: true },
-          },
-          accessModules: {
-            include: { module: true },
+            include: {
+              role: {
+                include: {
+                  modules: {
+                    include: { module: true }, // ← Aquí se obtiene el módulo
+                  },
+                },
+              },
+            },
           },
         },
       });
@@ -47,9 +51,9 @@ const nextAuthInstance = NextAuth({
       if (!existingUser) return token;
 
       token.roles = existingUser.roles.map((userRole) => userRole.role.name);
-      token.accessModules = existingUser.accessModules.map(
-        (userModule) => userModule.module.name
-      );
+      token.accessModules = existingUser.roles.flatMap((userRole) =>
+        userRole.role.modules.map((roleModule) => roleModule.module.name)
+      ); // ← Obtener los módulos desde el rol
 
       return token;
     },

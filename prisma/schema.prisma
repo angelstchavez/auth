@@ -8,18 +8,17 @@ datasource db {
 }
 
 model User {
-  id            String             @id @default(cuid())
-  name          String?
-  email         String            @unique
-  emailVerified DateTime?          @map("email_verified")
-  image         String?
-  password      String
-  status        Boolean            @default(true)
-  createdAt     DateTime           @default(now()) @map("created_at")
-  updatedAt     DateTime           @updatedAt @map("updated_at")
-  accounts      Account[]
-  roles         UserRole[]
-  accessModules UserAccessModule[]
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  status    Boolean  @default(true)
+  image     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  accounts Account[]
+  roles    UserRole[]
 
   @@map("users")
 }
@@ -44,43 +43,14 @@ model Account {
   @@map("accounts")
 }
 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
-
-model AccessModule {
-  id        String             @id @default(cuid())
-  name      String             @unique
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
-  users     UserAccessModule[]
-
-  @@map("access_modules")
-}
-
-model UserAccessModule {
-  userId     String
-  moduleId   String
-  assignedAt DateTime @default(now())
-
-  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  module AccessModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-
-  @@id([userId, moduleId])
-  @@map("user_access_modules")
-}
-
 model RoleDefinition {
-  id        String     @id @default(cuid())
-  name      String     @unique
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  users     UserRole[]
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users   UserRole[]
+  modules RoleAccessModule[]
 
   @@map("role_definitions")
 }
@@ -95,4 +65,35 @@ model UserRole {
 
   @@id([userId, roleId])
   @@map("user_roles")
+}
+
+model AccessModule {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roles RoleAccessModule[]
+
+  @@map("access_modules")
+}
+
+model RoleAccessModule {
+  roleId   String
+  moduleId String
+
+  role   RoleDefinition @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  module AccessModule   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, moduleId])
+  @@map("role_access_modules")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }
