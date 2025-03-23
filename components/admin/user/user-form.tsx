@@ -66,6 +66,7 @@ const UserForm = () => {
     if (response.success) {
       toast.success("Usuario registrado exitosamente");
       form.reset();
+      console.log(response.data);
     } else if (response.error) {
       toast.error(response.error);
     }

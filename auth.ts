@@ -20,12 +20,14 @@ const nextAuthInstance = NextAuth({
       }
 
       if (token.role && session.user) {
-        session.user.role = token.role as string;
+        session.user.role = token.role;
       }
+
       if (token.accessModules && session.user) {
         session.user.accessModules = token.accessModules as string[];
       }
 
+      console.log("Session user:", session.user);
       return session;
     },
     async jwt({ token }) {
@@ -46,13 +48,14 @@ const nextAuthInstance = NextAuth({
 
       if (!existingUser) return token;
 
-      if (existingUser.role) {
-        token.role = existingUser.role.name;
-        token.accessModules = existingUser.role.modules.map(
-          (roleModule) => roleModule.module.name
-        );
-      }
+      token.role = existingUser.role?.name ?? undefined;
 
+      token.accessModules =
+        existingUser.role?.modules.map(
+          (roleModule) => roleModule.module.name
+        ) ?? [];
+
+      console.log("JWT token:", token);
       return token;
     },
   },

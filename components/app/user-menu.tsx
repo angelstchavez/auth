@@ -14,7 +14,7 @@ interface ProfileMenuProps {
   user: {
     name?: string | null;
     email?: string | null;
-    role: string;
+    role?: string | null;
   };
 }
 
@@ -22,6 +22,7 @@ export function UserMenu({ user }: ProfileMenuProps) {
   const userName = user?.name || "Usuario";
   const userEmail = user?.email || "Correo";
   const userRole = user?.role || "Rol";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
