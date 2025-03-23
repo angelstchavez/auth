@@ -126,47 +126,51 @@ const RoleAccessForm = () => {
                 </FormItem>
               )}
             />
-
-            {/* Checkboxes de Módulos */}
             <FormField
               control={form.control}
               name="moduleIds"
               render={() => (
                 <FormItem>
                   <FormLabel>Módulos de acceso</FormLabel>
-                  <div className="grid gap-2">
-                    {modules.map((module) => (
-                      <FormField
-                        key={module.id}
-                        control={form.control}
-                        name="moduleIds"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value.includes(module.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...field.value,
-                                        module.id,
-                                      ])
-                                    : field.onChange(
-                                        field.value.filter(
-                                          (id) => id !== module.id
-                                        )
-                                      );
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {module.name}
-                            </FormLabel>
-                          </FormItem>
-                        )}
-                      />
-                    ))}
-                  </div>
+                  {modules.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      No se encontraron módulos registrados.
+                    </p>
+                  ) : (
+                    <div className="grid gap-2">
+                      {modules.map((module) => (
+                        <FormField
+                          key={module.id}
+                          control={form.control}
+                          name="moduleIds"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value.includes(module.id)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field.value,
+                                          module.id,
+                                        ])
+                                      : field.onChange(
+                                          field.value.filter(
+                                            (id) => id !== module.id
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {module.name}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

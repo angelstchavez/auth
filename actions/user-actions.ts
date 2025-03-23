@@ -45,29 +45,29 @@ export const createUser = async (userData: {
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
 
+    let roleId: string | undefined;
+    if (userData.role) {
+      const role = await prisma.roleDefinition.findUnique({
+        where: { name: userData.role },
+      });
+
+      if (!role) {
+        const newRole = await prisma.roleDefinition.create({
+          data: { name: userData.role },
+        });
+        roleId = newRole.id;
+      } else {
+        roleId = role.id;
+      }
+    }
+
     const newUser = await prisma.user.create({
       data: {
         name: userData.name,
         email: userData.email,
         password: hashedPassword,
         status: true,
-        roles: {
-          create: {
-            role: {
-              connectOrCreate: {
-                where: { name: userData.role || "USER" },
-                create: { name: userData.role || "USER" },
-              },
-            },
-          },
-        },
-      },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
+        roleId: roleId,
       },
     });
 
@@ -78,6 +78,73 @@ export const createUser = async (userData: {
   }
 };
 
+export const updateUser = async (
+  userId: string,
+  userData: {
+    name?: string | null;
+    email?: string;
+    password?: string;
+    role?: string;
+  }
+): Promise<ResponseMessage> => {
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!existingUser) {
+      return { error: MESSAGES.NOT_FOUND };
+    }
+
+    if (userData.email && userData.email !== existingUser.email) {
+      const userWithSameEmail = await prisma.user.findUnique({
+        where: { email: userData.email },
+      });
+
+      if (userWithSameEmail) {
+        return { error: MESSAGES.USER_EXISTS };
+      }
+    }
+
+    let hashedPassword: string | undefined;
+    if (userData.password) {
+      hashedPassword = await bcrypt.hash(userData.password, 10);
+    }
+
+    let roleId: string | undefined;
+    if (userData.role) {
+      const role = await prisma.roleDefinition.findUnique({
+        where: { name: userData.role },
+      });
+
+      if (!role) {
+        const newRole = await prisma.roleDefinition.create({
+          data: { name: userData.role },
+        });
+        roleId = newRole.id;
+      } else {
+        roleId = role.id;
+      }
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: userData.name !== undefined ? userData.name : existingUser.name,
+        email:
+          userData.email !== undefined ? userData.email : existingUser.email,
+        password:
+          hashedPassword !== undefined ? hashedPassword : existingUser.password,
+        roleId: roleId !== undefined ? roleId : existingUser.roleId,
+      },
+    });
+
+    return { success: MESSAGES.UPDATE_SUCCESS, data: updatedUser };
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    return { error: MESSAGES.UPDATE_ERROR };
+  }
+};
 
 export const deleteUserHandler = async (
   userId: string
@@ -96,11 +163,7 @@ export const getUserById = async (userId: string) => {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
+        role: true,
       },
     });
 
@@ -115,11 +178,7 @@ export const getUserByEmail = async (email: string) => {
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
+        role: true,
       },
     });
 
@@ -139,13 +198,10 @@ export const getUsers = async (): Promise<ResponseMessage> => {
         status: true,
         createdAt: true,
         updatedAt: true,
-        roles: {
+        role: {
           select: {
-            role: {
-              select: {
-                name: true,
-              },
-            },
+            id: true,
+            name: true,
           },
         },
       },
