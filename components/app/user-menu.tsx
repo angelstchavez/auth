@@ -10,7 +10,18 @@ import { Button } from "@/components/ui/button";
 import { UserRound } from "lucide-react";
 import { SignOutUser } from "@/actions/login-actions";
 
-export function UserMenu() {
+interface ProfileMenuProps {
+  user: {
+    name?: string | null;
+    email?: string | null;
+    role: string;
+  };
+}
+
+export function UserMenu({ user }: ProfileMenuProps) {
+  const userName = user?.name || "Usuario";
+  const userEmail = user?.email || "Correo";
+  const userRole = user?.role || "Rol";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -21,9 +32,12 @@ export function UserMenu() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Nombre</p>
+            <p className="text-sm font-medium leading-none">{userName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              m@example.com
+              {userEmail}
+            </p>
+            <p className="text-xs leading-none text-muted-foreground font-semibold">
+              {userRole}
             </p>
           </div>
         </DropdownMenuLabel>

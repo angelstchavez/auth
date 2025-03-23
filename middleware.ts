@@ -28,7 +28,6 @@ export default auth((req) => {
     if (isLoggedIn) {
       const redirectPath =
         userRole === "ADMIN" ? DEFAULT_ADMIN_REDIRECT : DEFAULT_LOGIN_REDIRECT;
-
       return Response.redirect(new URL(redirectPath, nextUrl));
     }
     return;
