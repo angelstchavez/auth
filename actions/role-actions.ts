@@ -206,3 +206,33 @@ export const associateModulesToRole = async (data: {
     return { error: MESSAGES.MODULES_ASSIGN_ERROR };
   }
 };
+
+export const getAccessModulesByRole = async (
+  roleId: string
+): Promise<ResponseMessage> => {
+  try {
+    const roleWithModules = await prisma.roleDefinition.findUnique({
+      where: { id: roleId },
+      include: {
+        modules: {
+          include: {
+            module: true,
+          },
+        },
+      },
+    });
+
+    if (!roleWithModules) {
+      return { error: "Rol no encontrado." };
+    }
+
+    const accessModules = roleWithModules.modules.map(
+      (roleModule) => roleModule.module
+    );
+
+    return { data: accessModules };
+  } catch (error) {
+    console.error("Error al obtener los módulos de acceso:", error);
+    return { error: "Error al obtener los módulos de acceso." };
+  }
+};
