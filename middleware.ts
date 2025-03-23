@@ -27,7 +27,7 @@ export default auth((req) => {
   if (isAuthRoute) {
     if (isLoggedIn) {
       const redirectPath =
-        userRole === "ADMIN" ? DEFAULT_ADMIN_REDIRECT : DEFAULT_LOGIN_REDIRECT;
+        userRole === "Administrador" ? DEFAULT_ADMIN_REDIRECT : DEFAULT_LOGIN_REDIRECT;
       return Response.redirect(new URL(redirectPath, nextUrl));
     }
     return;
@@ -39,7 +39,7 @@ export default auth((req) => {
 
   if (
     isLoggedIn &&
-    userRole === "ADMIN" &&
+    userRole === "Administrado" &&
     !nextUrl.pathname.startsWith("/admin")
   ) {
     return Response.redirect(new URL(DEFAULT_ADMIN_REDIRECT, nextUrl));
@@ -47,7 +47,7 @@ export default auth((req) => {
 
   if (
     isLoggedIn &&
-    userRole !== "ADMIN" &&
+    userRole !== "Administrado" &&
     nextUrl.pathname.startsWith("/admin")
   ) {
     return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));

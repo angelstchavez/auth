@@ -3,7 +3,7 @@
 import * as z from "zod";
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { DEFAULT_DASHBOARD_REDIRECT } from "@/routes";
 import { loginSchema } from "@/schemas/login";
 
 const MESSAGES = {
@@ -26,7 +26,7 @@ export const loginUser = async (data: z.infer<typeof loginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: DEFAULT_DASHBOARD_REDIRECT,
     });
 
     return { error: "", success: MESSAGES.EMAIL_SENT };

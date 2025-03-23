@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { RoleAccessModuleSchema } from "@/schemas/role";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -127,6 +126,13 @@ export const getRoleByName = async (name: string) => {
   }
 };
 
+export async function getRoleName(roleId: string) {
+  return await prisma.roleDefinition.findUnique({
+    where: { id: roleId },
+    select: { name: true },
+  });
+}
+
 export const getRoles = async (): Promise<ResponseMessage> => {
   try {
     const roles = await prisma.roleDefinition.findMany({
@@ -159,46 +165,12 @@ export const associateModulesToRole = async (data: {
   moduleIds: string[];
 }): Promise<ResponseMessage> => {
   try {
-    const validation = RoleAccessModuleSchema.safeParse(data);
-
-    if (!validation.success) {
-      return { error: MESSAGES.INVALID_FIELDS };
-    }
-
-    const { roleId, moduleIds } = validation.data;
-
-    const role = await prisma.roleDefinition.findUnique({
-      where: { id: roleId },
+    await prisma.roleAccessModule.createMany({
+      data: data.moduleIds.map((moduleId) => ({
+        roleId: data.roleId,
+        moduleId,
+      })),
     });
-
-    if (!role) {
-      return { error: MESSAGES.NOT_FOUND };
-    }
-
-    const existingModules = await prisma.accessModule.findMany({
-      where: { id: { in: moduleIds } },
-      select: { id: true },
-    });
-
-    const existingModuleIds = existingModules.map((mod) => mod.id);
-    const invalidModules = moduleIds.filter(
-      (id) => !existingModuleIds.includes(id)
-    );
-
-    if (invalidModules.length > 0) {
-      return {
-        error: `${
-          MESSAGES.MODULES_ASSIGN_ERROR
-        }: Módulos no encontrados (${invalidModules.join(", ")})`,
-      };
-    }
-
-    await prisma.$transaction([
-      prisma.roleAccessModule.deleteMany({ where: { roleId } }),
-      prisma.roleAccessModule.createMany({
-        data: moduleIds.map((moduleId) => ({ roleId, moduleId })),
-      }),
-    ]);
 
     return { success: MESSAGES.MODULES_ASSIGNED };
   } catch (error) {

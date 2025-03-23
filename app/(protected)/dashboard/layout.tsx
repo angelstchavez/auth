@@ -7,7 +7,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppName } from "@/lib/env";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getRoleById } from "@/actions/role-actions";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -24,16 +23,6 @@ export default async function DashboardLayout({
   if (!session?.user) {
     redirect("/login");
   }
-
-  const roleName = session.user.role
-    ? (await getRoleById(session.user.role))?.name || "Rol no asignado"
-    : "Rol no asignado";
-
-  const userWithRoleName = {
-    ...session.user,
-    role: roleName,
-  };
-
   return (
     <SidebarProvider>
       <DashboardSidebar />
@@ -45,7 +34,7 @@ export default async function DashboardLayout({
           </div>
           <div className="ml-auto space-x-2">
             <ThemeToggle />
-            <UserMenu user={userWithRoleName as any} />{" "}
+            <UserMenu user={session.user as any} />
             {/* Pasar el usuario con el nombre del rol */}
           </div>
         </header>

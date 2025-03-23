@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { createUser } from "@/actions/user-actions";
@@ -53,15 +52,12 @@ const UserForm = () => {
       name: "",
       email: "",
       password: "",
-      confirmPassword: "",
-      role: "",
+      roleId: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof UserSchema>) => {
-    const { confirmPassword, ...userData } = values;
-
-    const response = await createUser(userData);
+    const response = await createUser(values);
 
     if (response.success) {
       toast.success("Usuario registrado exitosamente");
@@ -131,20 +127,7 @@ const UserForm = () => {
               />
               <FormField
                 control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirmar contraseña</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="role"
+                name="roleId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Rol</FormLabel>

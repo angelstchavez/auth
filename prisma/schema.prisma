@@ -19,7 +19,7 @@ model User {
 
   accounts Account[]
   roleId   String?         @map("role_id")
-  role     RoleDefinition? @relation(fields: [roleId], references: [id], onDelete: SetNull) // Relación uno a muchos
+  role     RoleDefinition? @relation(fields: [roleId], references: [id], onDelete: SetNull)
 
   @@map("users")
 }
