@@ -19,7 +19,7 @@ export default function DashboardLayout({
     <SidebarProvider>
       <DashboardSidebar />
       <main className="flex flex-col flex-1">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-card">
           <div className="flex items-center gap-2">
             <SidebarTrigger />
             <div className="font-semibold text-base sm:text-sm">{AppName}</div>

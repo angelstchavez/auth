@@ -14,7 +14,7 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-  const userRoles = req.auth?.user?.roles || [];
+  const userRole = req.auth?.user?.role;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
@@ -26,9 +26,8 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      const redirectPath = userRoles.includes("ADMIN")
-        ? DEFAULT_ADMIN_REDIRECT
-        : DEFAULT_LOGIN_REDIRECT;
+      const redirectPath =
+        userRole === "ADMIN" ? DEFAULT_ADMIN_REDIRECT : DEFAULT_LOGIN_REDIRECT;
 
       return Response.redirect(new URL(redirectPath, nextUrl));
     }
@@ -41,7 +40,7 @@ export default auth((req) => {
 
   if (
     isLoggedIn &&
-    userRoles.includes("ADMIN") &&
+    userRole === "ADMIN" &&
     !nextUrl.pathname.startsWith("/admin")
   ) {
     return Response.redirect(new URL(DEFAULT_ADMIN_REDIRECT, nextUrl));
@@ -49,7 +48,7 @@ export default auth((req) => {
 
   if (
     isLoggedIn &&
-    !userRoles.includes("ADMIN") &&
+    userRole !== "ADMIN" &&
     nextUrl.pathname.startsWith("/admin")
   ) {
     return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
