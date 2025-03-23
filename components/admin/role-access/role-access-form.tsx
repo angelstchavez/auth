@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react"; // Importa el loader
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,7 +38,7 @@ import { RoleAccessModuleSchema } from "@/schemas/role";
 const RoleAccessForm = () => {
   const [roles, setRoles] = useState<{ id: string; name: string }[]>([]);
   const [modules, setModules] = useState<{ id: string; name: string }[]>([]);
-  const [isLoading, setIsLoading] = useState(true); // Estado para el loader
+  const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<z.infer<typeof RoleAccessModuleSchema>>({
     resolver: zodResolver(RoleAccessModuleSchema),
@@ -76,6 +75,22 @@ const RoleAccessForm = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Asociar Módulos a Rol</CardTitle>
+          <CardDescription>
+            Seleccione un rol y los módulos a asignar.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Cargando...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -94,27 +109,18 @@ const RoleAccessForm = () => {
                 <FormItem>
                   <FormLabel>Rol</FormLabel>
                   <FormControl>
-                    {isLoading ? (
-                      <div className="flex justify-center items-center">
-                        <Loader2 className="animate-spin h-6 w-6" />{" "}
-                      </div>
-                    ) : (
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Seleccione un rol" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {roles.map((role) => (
-                            <SelectItem key={role.id} value={role.id}>
-                              {role.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Seleccione un rol" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {roles.map((role) => (
+                          <SelectItem key={role.id} value={role.id}>
+                            {role.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -128,57 +134,45 @@ const RoleAccessForm = () => {
               render={() => (
                 <FormItem>
                   <FormLabel>Módulos de acceso</FormLabel>
-                  {isLoading ? (
-                    <div className="flex justify-center items-center">
-                      <Loader2 className="animate-spin h-6 w-6" />{" "}
-                    </div>
-                  ) : (
-                    <div className="grid gap-2">
-                      {modules.map((module) => (
-                        <FormField
-                          key={module.id}
-                          control={form.control}
-                          name="moduleIds"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value.includes(module.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          module.id,
-                                        ])
-                                      : field.onChange(
-                                          field.value.filter(
-                                            (id) => id !== module.id
-                                          )
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                {module.name}
-                              </FormLabel>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  <div className="grid gap-2">
+                    {modules.map((module) => (
+                      <FormField
+                        key={module.id}
+                        control={form.control}
+                        name="moduleIds"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value.includes(module.id)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([
+                                        ...field.value,
+                                        module.id,
+                                      ])
+                                    : field.onChange(
+                                        field.value.filter(
+                                          (id) => id !== module.id
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {module.name}
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <Loader2 className="animate-spin h-4 w-4" />
-              ) : (
-                "Registrar"
-              )}
-            </Button>
+            <Button type="submit">Registrar</Button>
           </form>
         </Form>
       </CardContent>

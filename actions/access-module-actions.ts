@@ -95,20 +95,11 @@ export const getAccessModuleById = async (moduleId: string) => {
   try {
     const accessModule = await prisma.accessModule.findUnique({
       where: { id: moduleId },
-      include: {
-        roles: {
-          include: {
-            role: {
-              include: {
-                users: {
-                  include: {
-                    user: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -122,20 +113,11 @@ export const getAccessModuleByName = async (name: string) => {
   try {
     const accessModule = await prisma.accessModule.findUnique({
       where: { name },
-      include: {
-        roles: {
-          include: {
-            role: {
-              include: {
-                users: {
-                  include: {
-                    user: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -157,15 +139,13 @@ export const getAccessModules = async (): Promise<ResponseMessage> => {
           select: {
             role: {
               select: {
+                id: true,
+                name: true,
                 users: {
                   select: {
-                    user: {
-                      select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                      },
-                    },
+                    id: true,
+                    name: true,
+                    email: true,
                   },
                 },
               },

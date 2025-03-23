@@ -5,20 +5,20 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      roles?: string[];
+      role?: string;
       accessModules?: string[];
     } & User;
   }
 
   interface User {
-    roles?: string[];
+    role?: string;
     accessModules?: string[];
   }
 }
 
 declare module "@auth/prisma-adapter" {
   interface AdapterUser {
-    roles?: string[];
+    role?: string;
     accessModules?: string[];
   }
 }
@@ -26,7 +26,7 @@ declare module "@auth/prisma-adapter" {
 declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
-    roles?: string[];
+    role?: string;
     accessModules?: string[];
   }
 }

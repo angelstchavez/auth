@@ -102,11 +102,7 @@ export const getRoleById = async (roleId: string) => {
     const role = await prisma.roleDefinition.findUnique({
       where: { id: roleId },
       include: {
-        users: {
-          include: {
-            user: true,
-          },
-        },
+        users: true,
       },
     });
 
@@ -121,11 +117,7 @@ export const getRoleByName = async (name: string) => {
     const role = await prisma.roleDefinition.findUnique({
       where: { name },
       include: {
-        users: {
-          include: {
-            user: true,
-          },
-        },
+        users: true,
       },
     });
 
@@ -143,17 +135,6 @@ export const getRoles = async (): Promise<ResponseMessage> => {
         name: true,
         createdAt: true,
         updatedAt: true,
-        users: {
-          select: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
-          },
-        },
       },
     });
     return { data: roles };
@@ -170,59 +151,6 @@ export const getTotalRoles = async () => {
   } catch (error) {
     console.error("Error fetching total roles:", error);
     return 0;
-  }
-};
-
-export const assignRoleToUser = async (
-  userId: string,
-  roleId: string
-): Promise<ResponseMessage> => {
-  try {
-    const existingAssignment = await prisma.userRole.findUnique({
-      where: {
-        userId_roleId: {
-          userId,
-          roleId,
-        },
-      },
-    });
-
-    if (existingAssignment) {
-      return { error: "El usuario ya tiene asignado este rol." };
-    }
-
-    await prisma.userRole.create({
-      data: {
-        userId,
-        roleId,
-      },
-    });
-
-    return { success: MESSAGES.USER_ROLE_ASSIGNED };
-  } catch (error) {
-    console.error("Error al asignar el rol al usuario:", error);
-    return { error: MESSAGES.USER_ROLE_ERROR };
-  }
-};
-
-export const removeRoleFromUser = async (
-  userId: string,
-  roleId: string
-): Promise<ResponseMessage> => {
-  try {
-    await prisma.userRole.delete({
-      where: {
-        userId_roleId: {
-          userId,
-          roleId,
-        },
-      },
-    });
-
-    return { success: MESSAGES.USER_ROLE_REMOVED };
-  } catch (error) {
-    console.error("Error al remover el rol del usuario:", error);
-    return { error: MESSAGES.USER_ROLE_ERROR };
   }
 };
 

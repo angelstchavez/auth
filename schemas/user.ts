@@ -1,19 +1,5 @@
 import * as z from "zod";
-
-const AccountSchema = z.object({
-  id: z.string().optional(),
-  userId: z.string(),
-  type: z.string(),
-  provider: z.string(),
-  providerAccountId: z.string(),
-  refresh_token: z.string().nullable().optional(),
-  access_token: z.string().nullable().optional(),
-  expires_at: z.number().nullable().optional(),
-  token_type: z.string().nullable().optional(),
-  scope: z.string().nullable().optional(),
-  id_token: z.string().nullable().optional(),
-  session_state: z.string().nullable().optional(),
-});
+import { AccountSchema } from "./account";
 
 export const UserSchema = z.object({
   id: z.string().optional(),
@@ -25,7 +11,7 @@ export const UserSchema = z.object({
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
   accounts: z.array(AccountSchema).optional(),
-  roles: z.array(z.string()).optional(),
+  role: z.string().optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;

@@ -19,8 +19,8 @@ const nextAuthInstance = NextAuth({
         session.user.id = token.sub;
       }
 
-      if (token.roles && session.user) {
-        session.user.roles = token.roles as string[];
+      if (token.role && session.user) {
+        session.user.role = token.role as string;
       }
       if (token.accessModules && session.user) {
         session.user.accessModules = token.accessModules as string[];
@@ -34,14 +34,10 @@ const nextAuthInstance = NextAuth({
       const existingUser = await prisma.user.findUnique({
         where: { id: token.sub },
         include: {
-          roles: {
+          role: {
             include: {
-              role: {
-                include: {
-                  modules: {
-                    include: { module: true }, // ← Aquí se obtiene el módulo
-                  },
-                },
+              modules: {
+                include: { module: true },
               },
             },
           },
@@ -50,10 +46,12 @@ const nextAuthInstance = NextAuth({
 
       if (!existingUser) return token;
 
-      token.roles = existingUser.roles.map((userRole) => userRole.role.name);
-      token.accessModules = existingUser.roles.flatMap((userRole) =>
-        userRole.role.modules.map((roleModule) => roleModule.module.name)
-      ); // ← Obtener los módulos desde el rol
+      if (existingUser.role) {
+        token.role = existingUser.role.name;
+        token.accessModules = existingUser.role.modules.map(
+          (roleModule) => roleModule.module.name
+        );
+      }
 
       return token;
     },

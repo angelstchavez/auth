@@ -18,7 +18,8 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   accounts Account[]
-  roles    UserRole[]
+  roleId   String?         @map("role_id")
+  role     RoleDefinition? @relation(fields: [roleId], references: [id], onDelete: SetNull) // Relación uno a muchos
 
   @@map("users")
 }
@@ -49,22 +50,10 @@ model RoleDefinition {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users   UserRole[]
+  users   User[]
   modules RoleAccessModule[]
 
   @@map("role_definitions")
-}
-
-model UserRole {
-  userId     String
-  roleId     String
-  assignedAt DateTime @default(now())
-
-  user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role RoleDefinition @relation(fields: [roleId], references: [id], onDelete: Cascade)
-
-  @@id([userId, roleId])
-  @@map("user_roles")
 }
 
 model AccessModule {
