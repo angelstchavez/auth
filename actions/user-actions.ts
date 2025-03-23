@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { UserSchema } from "@/schemas/user";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import * as z from "zod";
 
 const prisma = new PrismaClient();
 
@@ -80,61 +78,6 @@ export const createUser = async (userData: {
   }
 };
 
-export const updateUserHandler = async (
-  userId: string,
-  values: z.infer<typeof UserSchema>
-): Promise<ResponseMessage> => {
-  const validatedFields = UserSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return { error: MESSAGES.INVALID_FIELDS };
-  }
-
-  const { email, roles, ...data } = validatedFields.data;
-
-  try {
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser && existingUser.id !== userId) {
-      return { error: MESSAGES.USER_EXISTS };
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        email,
-        ...data,
-        roles: roles
-          ? {
-              set: [],
-              create: roles.map((role) => ({
-                role: {
-                  connectOrCreate: {
-                    where: { name: role.name },
-                    create: { name: role.name },
-                  },
-                },
-              })),
-            }
-          : undefined,
-      },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
-      },
-    });
-
-    return { success: MESSAGES.UPDATE_SUCCESS, data: updatedUser };
-  } catch (error) {
-    console.error("Error updating user:", error);
-    return { error: MESSAGES.UPDATE_ERROR };
-  }
-};
 
 export const deleteUserHandler = async (
   userId: string

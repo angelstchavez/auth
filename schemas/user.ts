@@ -1,27 +1,31 @@
 import * as z from "zod";
 
-const RoleSchema = z.object({
+const AccountSchema = z.object({
   id: z.string().optional(),
-  name: z.string(),
-});
-
-const AccessModuleSchema = z.object({
-  id: z.string().optional(),
-  name: z.string(),
+  userId: z.string(),
+  type: z.string(),
+  provider: z.string(),
+  providerAccountId: z.string(),
+  refresh_token: z.string().nullable().optional(),
+  access_token: z.string().nullable().optional(),
+  expires_at: z.number().nullable().optional(),
+  token_type: z.string().nullable().optional(),
+  scope: z.string().nullable().optional(),
+  id_token: z.string().nullable().optional(),
+  session_state: z.string().nullable().optional(),
 });
 
 export const UserSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "El nombre es requerido"),
   email: z.string().email("El correo electrónico no es válido"),
-  emailVerified: z.date().nullable().optional(),
-  image: z.string().nullable().optional(),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
   status: z.boolean().optional().default(true),
+  image: z.string().nullable().optional(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
-  roles: z.array(RoleSchema).optional(),
-  accessModules: z.array(AccessModuleSchema).optional(),
+  accounts: z.array(AccountSchema).optional(),
+  roles: z.array(z.string()).optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;

@@ -1,6 +1,7 @@
 import AccessModuleForm from "@/components/admin/access-module/access-module-form";
 import RoleAccessForm from "@/components/admin/role-access/role-access-form";
 import RoleForm from "@/components/admin/role/role-form";
+import UserForm from "@/components/admin/user/user-form";
 import Footer from "@/components/landing/footer";
 import Header from "@/components/landing/header";
 
@@ -13,6 +14,7 @@ export default function Home() {
           <AccessModuleForm />
           <RoleForm />
           <RoleAccessForm />
+          <UserForm />
         </div>
       </main>
       <Footer />
