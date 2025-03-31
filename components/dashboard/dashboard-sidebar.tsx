@@ -44,7 +44,7 @@ export function DashboardSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Panel de Control</SidebarGroupLabel>
+          <SidebarGroupLabel>Panel de control</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

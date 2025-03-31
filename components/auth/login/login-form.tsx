@@ -1,5 +1,6 @@
 "use client";
 
+import { loginUser } from "@/actions/login-actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { loginSchema } from "@/schemas/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,6 +30,10 @@ const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -36,9 +42,17 @@ const LoginForm = ({
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
-  }
+  const onSubmit = (values: z.infer<typeof loginSchema>) => {
+    setError("");
+    setSuccess("");
+
+    startTransition(() => {
+      loginUser(values).then((response) => {
+        setError(response.error);
+        setSuccess(response.success);
+      });
+    });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -62,6 +76,7 @@ const LoginForm = ({
                           placeholder="m@example.com"
                           {...field}
                           autoComplete="email"
+                          disabled={isPending}
                         />
                       </FormControl>
                       <FormMessage />
@@ -83,13 +98,25 @@ const LoginForm = ({
                         </Link>
                       </div>
                       <FormControl>
-                        <Input type="password" {...field} />
+                        <Input
+                          type="password"
+                          {...field}
+                          disabled={isPending}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="mt-2">
+              </div>
+              <div className="mt-6">
+                <div className="text-red-600 font-semibold text-sm mb-2">
+                  {error}
+                </div>
+                <div className="text-green-600 font-semibold text-sm mb-2">
+                  {success}
+                </div>
+                <Button type="submit" className="w-full Fmt-2" disabled={isPending}>
                   Iniciar sesión
                 </Button>
               </div>
