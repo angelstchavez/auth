@@ -24,10 +24,6 @@ export default {
               id: user.id,
               email: user.email,
               name: user.name,
-              role: user.role?.name,
-              accessModules: user.role?.modules.map(
-                (module) => module.module.name
-              ),
             };
           }
         }
